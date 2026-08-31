@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="simulacao_lobo_coelho/simulacao_lobo_coelho.vcxproj" />
+</Solution>
