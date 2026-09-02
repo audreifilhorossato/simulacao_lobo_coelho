@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="simulacao_lobo_coelho/simulacao_lobo_coelho.vcxproj" />
+  <Project Path="simulacao_lobo_coelho/simulacao_lobo_coelho.vcxproj" Id="bbbfea5d-27e4-4bb1-bdc0-d75f5af31ce1" />
 </Solution>
