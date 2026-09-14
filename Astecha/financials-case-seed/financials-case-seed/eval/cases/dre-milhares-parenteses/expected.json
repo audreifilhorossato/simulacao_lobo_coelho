@@ -1,0 +1,53 @@
+{
+  "_comentario": [
+    "Este caso concentra quatro armadilhas de uma vez:",
+    "",
+    "1. ESCALA. 'Em milhares de reais' no cabecalho: todo valor multiplica por",
+    "   1000. O gabarito esta em REAIS. Se voce entregar 12500 em vez de",
+    "   12500000, erra TODOS os valores — e o SCORE cai 20 pontos de uma vez.",
+    "",
+    "2. PARENTESES = NEGATIVO no papel, mas a convencao de DESTINO e DESPESA",
+    "   POSITIVA (o checks_service faz receita - despesa). Entao '(6.100)' vira",
+    "   +6100000 na conta 5.01. Inverter isso faz a DRE 'nao fechar' por bug seu.",
+    "",
+    "3. DEDUCOES DA RECEITA (4.02) sao a excecao: elas pertencem ao grupo 4",
+    "   (RECEITA) e reduzem a receita, entao entram NEGATIVAS. Isso dispara o",
+    "   check SIGN_CONVENTION de proposito — e um aviso correto sobre um dado",
+    "   correto. NAO 'conserte' invertendo o sinal: ai a receita liquida vira",
+    "   14.800 e a DRE deixa de fechar.",
+    "",
+    "4. SUBTOTAIS IMPRESSOS. 'RECEITA LIQUIDA', 'LUCRO BRUTO', 'RESULTADO",
+    "   OPERACIONAL', 'RESULTADO ANTES DO IR' e 'LUCRO LIQUIDO' sao contas do",
+    "   grupo 6 (RESULT) — conferencia, nunca parcela. O checks_service ja as",
+    "   exclui de toda soma; o seu de-para so precisa manda-las para 6.xx e nao",
+    "   para 4.xx/5.xx.",
+    "",
+    "E 'Lucro por acao 1,05' NAO e linha de DRE: e uma nota. Mapea-la para",
+    "qualquer conta derruba a sua precisao.",
+    "",
+    "Confira: (12.500 - 2.300) - (6.100+900+1.200+400+550) = 10.200 - 9.150 = 1.050."
+  ],
+  "statements": [
+    {
+      "statement_type": "INCOME_STATEMENT",
+      "period_end_date": "2025-12-31",
+      "period_type": "ANNUAL",
+      "currency": "BRL",
+      "scale_factor": 1000,
+      "lines": [
+        {"account_code": "4.01", "raw_label": "RECEITA BRUTA DE VENDAS", "value": "12500000.00"},
+        {"account_code": "4.02", "raw_label": "Deducoes da receita bruta", "value": "-2300000.00"},
+        {"account_code": "5.01", "raw_label": "Custo dos produtos vendidos", "value": "6100000.00"},
+        {"account_code": "5.02", "raw_label": "Despesas com vendas", "value": "900000.00"},
+        {"account_code": "5.03", "raw_label": "Despesas gerais e administrativas", "value": "1200000.00"},
+        {"account_code": "5.05", "raw_label": "Despesas financeiras", "value": "400000.00"},
+        {"account_code": "5.06", "raw_label": "Imposto de renda e contribuicao social", "value": "550000.00"},
+        {"account_code": "6.01", "raw_label": "RECEITA LIQUIDA", "value": "10200000.00"},
+        {"account_code": "6.02", "raw_label": "LUCRO BRUTO", "value": "4100000.00"},
+        {"account_code": "6.03", "raw_label": "RESULTADO OPERACIONAL", "value": "2000000.00"},
+        {"account_code": "6.04", "raw_label": "RESULTADO ANTES DO IR E CSLL", "value": "1600000.00"},
+        {"account_code": "6.05", "raw_label": "LUCRO LIQUIDO DO EXERCICIO", "value": "1050000.00"}
+      ]
+    }
+  ]
+}

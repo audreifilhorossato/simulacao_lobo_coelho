@@ -1,0 +1,32 @@
+# Segredo — NUNCA commite
+.env
+*.pem
+*.key
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Arquivos enviados no ambiente local
+backend/var/
+
+# Saida do arreio de avaliacao (o relatorio se regenera; o gabarito nao)
+eval/out/
+
+# Sistema operacional / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

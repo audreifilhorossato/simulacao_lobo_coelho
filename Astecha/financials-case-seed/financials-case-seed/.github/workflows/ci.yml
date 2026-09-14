@@ -1,0 +1,81 @@
+## CI — roda em todo push e todo PR.
+##
+## Criterio de avaliacao nº 3: este workflow tem que estar VERDE na entrega.
+## Nao desligue um job para "passar"; se ele esta vermelho, o codigo esta.
+##
+## O job `eval` e o que prova o criterio nº 1: ele imprime a acuracia do seu
+## provider no resumo do run, toda vez. E assim que voces (e nos) vemos a
+## curva subir de sprint para sprint.
+
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check backend
+      - run: ruff format --check backend
+
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: financials
+          POSTGRES_USER: financials
+          POSTGRES_PASSWORD: financials
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+    env:
+      POSTGRES_HOST: localhost
+      FINANCIALS_STORAGE_ROOT: /tmp/uploads
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instala dependencias
+        working-directory: backend
+        run: pip install ".[parsing,dev]"
+      - name: Migrations em dia
+        working-directory: backend
+        # Falha se alguem mudou um model e esqueceu de gerar a migration.
+        # E o erro que so aparece no ambiente de outra pessoa, dias depois.
+        run: python manage.py makemigrations --check --dry-run
+      - name: Testes
+        working-directory: backend
+        run: pytest --cov=src --cov-report=term-missing
+      - name: Schema OpenAPI gera sem erro
+        working-directory: backend
+        # Criterio: TODO endpoint tem que aparecer no schema (regra R13).
+        run: python manage.py spectacular --file /tmp/schema.yml
+
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instala dependencias
+        working-directory: backend
+        run: pip install ".[parsing,dev]"
+      - name: Acuracia da extracao
+        run: python eval/run.py --provider "${PROVIDER:-naive}" --markdown >> "$GITHUB_STEP_SUMMARY"
+        env:
+          PROVIDER: naive # <- troque para rule_based / llm quando existir

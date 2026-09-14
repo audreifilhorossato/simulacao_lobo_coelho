@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Tailwind cru de proposito. NAO construa um design system aqui — e
+   anti-requisito do case (a Astecha reveste a tela com o dela na migracao).
+   Gaste o tempo no fluxo, nao na aparencia. */

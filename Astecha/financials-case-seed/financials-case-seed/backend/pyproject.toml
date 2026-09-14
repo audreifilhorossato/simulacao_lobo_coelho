@@ -1,0 +1,48 @@
+[project]
+name = "financials-case"
+version = "0.1.0"
+description = "Case Insper Code Jr. 2026.2 — extracao e padronizacao de demonstracoes financeiras"
+requires-python = ">=3.12"
+
+# ESTE arquivo e a unica fonte de verdade de dependencia. Nao crie
+# requirements.txt: a plataforma Astecha usa pyproject e um segundo arquivo so
+# diverge.
+dependencies = [
+    "django>=5.1,<6.1",
+    "djangorestframework>=3.15",
+    "drf-spectacular>=0.27",
+    "django-cors-headers>=4.4",
+    "psycopg[binary]>=3.2",
+    "celery>=5.4",
+    "redis>=5.0",
+    "gunicorn>=23.0",
+]
+
+[project.optional-dependencies]
+# Parse de documento. Instale o que voce for usar de verdade; nao carregue o
+# que nao usa (imagem maior, build mais lento, superficie de seguranca maior).
+parsing = [
+    "pdfplumber>=0.11",      # PDF nativo: texto e tabelas
+    "pypdf>=5.0",            # metadados, paginacao, split
+    "openpyxl>=3.1",         # XLSX
+    "pytesseract>=0.3.13",   # OCR (precisa do binario tesseract na imagem)
+    "pdf2image>=1.17",       # rasterizar PDF escaneado (precisa do poppler)
+    "rapidfuzz>=3.9",        # fuzzy matching do de-para
+]
+
+dev = [
+    "pytest>=8.3",
+    "pytest-django>=4.9",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["credit", "config"]
