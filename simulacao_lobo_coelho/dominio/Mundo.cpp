@@ -24,6 +24,39 @@ void Mundo::remover_animal(AnimalId id) {
 	animais.erase(animal_encontrado);
 }
 
+VisaoAnimal Mundo::observar(Posicao centro, int raio) const {
+	VisaoAnimal visao;
+	visao.centro = centro;
+
+	if (raio < 0){
+		raio = 0;
+	}
+
+	for (int i = visao.centro.linha - raio; i <= visao.centro.linha + raio; i++) {
+		for (int j = visao.centro.coluna - raio; j <= visao.centro.coluna + raio; j++) {
+			int dist_linha = i - raio;
+			int dist_coluna = j - raio;
+
+			if ((dist_linha * dist_linha) + (dist_coluna * dist_coluna) <= raio) {
+				std::size_t n_linhas = tabuleiro.get_linhas();
+				std::size_t n_colunas = tabuleiro.get_colunas();
+				if (i > n_linhas){
+					i = i - n_linhas;
+				}
+				if (j > n_colunas) {
+					i = i - n_colunas;
+				}
+				CelulaObservada observada;
+
+				observada.posicao_relativa = { dist_linha,dist_coluna };
+				observada.posicao = { i,j };
+				visao.celulas.push_back(observada);
+			}
+		}
+	}
+
+}
+
 std::optional<AnimalId> Mundo::adicionar_animal(Especie especie, Posicao posicao, int energia_inicial, Tick tick_atual) {
 	if (!tabuleiro.posicao_valida(posicao)) {
 		return std::nullopt;

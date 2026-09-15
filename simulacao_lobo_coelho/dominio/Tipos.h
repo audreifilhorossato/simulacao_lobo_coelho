@@ -14,3 +14,16 @@ enum class Especie{
 	Coelho,
 	Lobo
 };
+
+enum class TipoAcao
+{
+	Esperar,
+	Mover
+};
+
+struct Acao
+{
+	TipoAcao tipo;
+	AnimalId animal_id;
+	Posicao destino;
+};

@@ -25,6 +25,7 @@
     <ClCompile Include="dominio\Tabuleiro.cpp" />
     <ClCompile Include="interface\Interface.cpp" />
     <ClCompile Include="simulacao\Simulacao.cpp" />
+    <ClCompile Include="simulacao\SistemaDecisao.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -33,10 +34,12 @@
     <ClInclude Include="dominio\Animal.h" />
     <ClInclude Include="dominio\Celula.h" />
     <ClInclude Include="dominio\Mundo.h" />
+    <ClInclude Include="dominio\SistemaVisao.h" />
     <ClInclude Include="dominio\Tabuleiro.h" />
     <ClInclude Include="dominio\Tipos.h" />
     <ClInclude Include="interface\Interface.h" />
     <ClInclude Include="simulacao\Simulacao.h" />
+    <ClInclude Include="simulacao\SistemaDecisao.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

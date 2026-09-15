@@ -11,7 +11,8 @@ Animal::Animal(
 	especie(especie),
 	posicao(posicao),
 	energia(energia_inicial),
-	idade(tick_nascimento),
+	tick_nascimento(tick_nascimento),
+	idade(0),
 	tempo_reproducao(0),
 	vivo(true)
 {

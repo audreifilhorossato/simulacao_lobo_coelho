@@ -1,6 +1,7 @@
 #pragma once
 #include "dominio/Tabuleiro.h"
 #include "dominio/Tipos.h"
+#include "dominio/SistemaVisao.h"
 #include "dominio/Animal.h"
 #include <unordered_map>
 
@@ -23,6 +24,8 @@ class Mundo {
 		const Tabuleiro& get_tabuleiro() const;
 
 		bool adicionar_planta(Posicao posicao);
+
+		VisaoAnimal observar(Posicao centro,int raio) const;
 
 		const std::unordered_map<AnimalId, Animal>& get_animais() const;
 

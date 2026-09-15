@@ -4,7 +4,7 @@
 Simulacao::Simulacao(std::size_t linhas, std::size_t colunas) 
 	:mundo(linhas, colunas), 
 	tempo_acumulado(0.0), 
-	tick_duracao(0.5), 
+	tick_duracao(0.1), 
 	tick_numero(0),
 	gerador(1), //semente fixa por enquanto
 	probabilidade_nascimento_planta(0.001) 
@@ -12,22 +12,22 @@ Simulacao::Simulacao(std::size_t linhas, std::size_t colunas)
 	mundo.adicionar_animal(
 		Especie::Coelho,
 		{ 2, 3 },
-		20,
-		tick_numero
+		tick_numero,
+		20
 	);
 
 	mundo.adicionar_animal(
 		Especie::Coelho,
 		{ 7, 8 },
-		20,
-		tick_numero
+		tick_numero,
+		20
 	);
 
 	mundo.adicionar_animal(
 		Especie::Coelho,
 		{ 11, 15 },
-		20,
-		tick_numero
+		tick_numero,
+		20
 	);
 }
 
@@ -38,6 +38,7 @@ const Tick Simulacao::get_tick_numero() const{
 void Simulacao::tick_atualizar() {
 	gerar_plantas();
 	processar_animais();
+	std::printf("Tick %d\n", tick_numero);
 	++tick_numero;
 }
 

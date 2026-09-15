@@ -36,6 +36,9 @@
     <ClCompile Include="dominio\Animal.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="simulacao\SistemaDecisao.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="interface\Interface.h">
@@ -63,6 +66,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dominio\Acoes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simulacao\SistemaDecisao.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dominio\SistemaVisao.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
