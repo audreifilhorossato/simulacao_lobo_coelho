@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="aplicacao\Aplicacao.cpp" />
+    <ClCompile Include="dominio\Animal.cpp" />
     <ClCompile Include="dominio\Mundo.cpp" />
     <ClCompile Include="dominio\Tabuleiro.cpp" />
     <ClCompile Include="interface\Interface.cpp" />
@@ -28,6 +29,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aplicacao\Aplicacao.h" />
+    <ClInclude Include="dominio\Acoes.h" />
+    <ClInclude Include="dominio\Animal.h" />
     <ClInclude Include="dominio\Celula.h" />
     <ClInclude Include="dominio\Mundo.h" />
     <ClInclude Include="dominio\Tabuleiro.h" />

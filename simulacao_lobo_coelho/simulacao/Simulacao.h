@@ -17,6 +17,8 @@ class Simulacao {
 
 		const Mundo& get_mundo() const;
 
+		const Tick get_tick_numero() const;
+
 		std::uint64_t get_numero_tick() const;
 
 	private:
@@ -28,6 +30,7 @@ class Simulacao {
 		std::mt19937 gerador;
 
 		void gerar_plantas();
+		void processar_animais();
 		double probabilidade_nascimento_planta;
 
 		void tick_atualizar();

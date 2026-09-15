@@ -7,7 +7,38 @@ Simulacao::Simulacao(std::size_t linhas, std::size_t colunas)
 	tick_duracao(0.5), 
 	tick_numero(0),
 	gerador(1), //semente fixa por enquanto
-	probabilidade_nascimento_planta(0.001) {
+	probabilidade_nascimento_planta(0.001) 
+{
+	mundo.adicionar_animal(
+		Especie::Coelho,
+		{ 2, 3 },
+		20,
+		tick_numero
+	);
+
+	mundo.adicionar_animal(
+		Especie::Coelho,
+		{ 7, 8 },
+		20,
+		tick_numero
+	);
+
+	mundo.adicionar_animal(
+		Especie::Coelho,
+		{ 11, 15 },
+		20,
+		tick_numero
+	);
+}
+
+const Tick Simulacao::get_tick_numero() const{
+	return tick_numero;
+}
+
+void Simulacao::tick_atualizar() {
+	gerar_plantas();
+	processar_animais();
+	++tick_numero;
 }
 
 const Mundo& Simulacao::get_mundo() const{
@@ -33,9 +64,23 @@ void Simulacao::tempo_avancar(Duracao tempo_passado) {
 	}
 }
 
-void Simulacao::tick_atualizar(){
-	gerar_plantas();
-	++tick_numero;
+void Simulacao::processar_animais() {
+	std::vector<AnimalId> animais_mortos;
+	const Tick idade_max = 120;
+	for (const auto& [id, animal] : mundo.get_animais()) {
+
+		Tick idade = animal.get_idade(tick_numero);
+		int energia = animal.get_energia();
+
+		if (energia <= 0 || idade > idade_max){
+			animais_mortos.push_back(id);
+		}
+	}
+
+	for (AnimalId id : animais_mortos) {
+		mundo.remover_animal(id);
+	}
+
 }
 
 void Simulacao::gerar_plantas() {

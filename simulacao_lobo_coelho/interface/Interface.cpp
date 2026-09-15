@@ -59,16 +59,36 @@ void Interface::desenhar(const Mundo& mundo) {
 
             const Celula& celula = tabuleiro.obter(posicao);
 
-            if (celula.tem_planta) {
-                quadrado.setFillColor(
-                    sf::Color(40, 200, 60)
-                );
+
+            //celula inicimente vazia
+            sf::Color cor_celula = sf::Color(55, 90, 55);
+
+            if (celula.animalId.has_value()) {
+                const AnimalId id = celula.animalId.value();
+                const Animal* animal = mundo.buscar_animal(id);
+
+                if (animal == nullptr) {
+                    //Problema a celula tem id que não existe animal
+                    cor_celula = sf::Color(255, 0, 255);
+                }
+                else {
+                    switch (animal->get_especie())
+                    {
+                        case Especie::Coelho:
+                            cor_celula = sf::Color(240, 240, 240);
+                            break;
+                        case Especie::Lobo:
+                            cor_celula = sf::Color(100, 100, 100);
+                            break;
+                    }
+                }
             }
-            else {
-                quadrado.setFillColor(
-                    sf::Color(55, 90, 55)
-                );
+            else if (celula.tem_planta) {
+                //planta
+                cor_celula = sf::Color(40, 200, 60);
             }
+
+            quadrado.setFillColor(cor_celula);
 
             float x = static_cast<float>(coluna) * TAMANHO_CELULA;
             float y = static_cast<float>(linha) * TAMANHO_CELULA;
