@@ -36,12 +36,78 @@ const Tick Simulacao::get_tick_numero() const{
 }
 
 void Simulacao::tick_atualizar() {
+	matar_animais();
+	resolver_conflitos(processar_animais());
 	gerar_plantas();
-	processar_animais();
-	std::printf("Tick %d\n", tick_numero);
 	++tick_numero;
 }
 
+void Simulacao::resolver_conflitos(std::vector<Acao> acoes) {
+	std::vector<Acao> acoes;
+
+	std::map<std::pair<int, int>, std::vector<Acao>> grupos_por_destino;
+
+	for (const auto& acao : acoes) {
+		grupos_por_destino[{acao.destino.linha, acao.destino.coluna}].push_back(acao);
+	}
+
+	std::vector<std::vector<Acao>> matriz_org_posicao;
+
+	for (const auto& par : grupos_por_destino) {
+		const std::vector<Acao>& acoes_no_mesmo_destino = par.second;
+		matriz_org_posicao.push_back(acoes_no_mesmo_destino);
+		
+	}
+
+	std::vector<Acao> acoes_fazer;
+
+	for (int i = 0; i < matriz_org_posicao.size(); i++) {
+		std::optional<Acao> prioritaria;
+		int maior_energia = -1;
+		for (int j = 0; j < matriz_org_posicao[i].size(); j++) {
+			if (matriz_org_posicao[i][j].tipo == TipoAcao::Esperar) {
+				acoes_fazer.push_back(matriz_org_posicao[i][j]);
+				break;
+			}
+			Animal* animal = mundo.buscar_animal(matriz_org_posicao[i][j].animal_id);
+			if (animal == nullptr){
+				continue;
+			}
+			if (animal->get_energia() > maior_energia) {
+				prioritaria = matriz_org_posicao[i][j];
+				continue;
+			}
+			if (animal->get_energia() == maior_energia) {
+				maior_energia = -1;
+				prioritaria = std::nullopt;
+			}
+		}
+		if (prioritaria == std::nullopt || maior_energia == -1) {
+			continue;
+		}
+		acoes_fazer.push_back(prioritaria.value());
+	}
+
+}
+
+void Simulacao::matar_animais() {
+	std::vector<AnimalId> animais_mortos;
+	const Tick idade_max = 120;
+	for (const auto& [id, animal] : mundo.get_animais()) {
+
+		Tick idade = animal.get_idade(tick_numero);
+		int energia = animal.get_energia();
+
+		if (energia <= 0 || idade > idade_max) {
+			animais_mortos.push_back(id);
+		}
+
+	}
+
+	for (AnimalId id : animais_mortos) {
+		mundo.remover_animal(id);
+	}
+}
 const Mundo& Simulacao::get_mundo() const{
 	return mundo;
 }
@@ -65,23 +131,20 @@ void Simulacao::tempo_avancar(Duracao tempo_passado) {
 	}
 }
 
-void Simulacao::processar_animais() {
-	std::vector<AnimalId> animais_mortos;
-	const Tick idade_max = 120;
+std::vector<Acao> Simulacao::processar_animais() {
+
+	std::vector<Acao> acoes;
+
 	for (const auto& [id, animal] : mundo.get_animais()) {
 
-		Tick idade = animal.get_idade(tick_numero);
-		int energia = animal.get_energia();
+		const VisaoAnimal visao = mundo.observar(animal.get_posicao(), 2);
 
-		if (energia <= 0 || idade > idade_max){
-			animais_mortos.push_back(id);
-		}
+		const Acao acao = sistema_decisao.decidir(animal, visao, gerador);
+
+		acoes.push_back(acao);
 	}
 
-	for (AnimalId id : animais_mortos) {
-		mundo.remover_animal(id);
-	}
-
+	return acoes;
 }
 
 void Simulacao::gerar_plantas() {

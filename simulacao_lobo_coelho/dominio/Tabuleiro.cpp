@@ -13,6 +13,21 @@ Tabuleiro::Tabuleiro(
 {
 }
 
+Posicao Tabuleiro::normatizar_posicao(Posicao posicao) const {
+    const int n_linhas = static_cast<int>(get_linhas());
+    const int n_colunas = static_cast<int>(get_colunas());
+
+    if (n_colunas <= 0 || n_linhas <= 0) {
+        throw std::logic_error("Nao e possivel normalizar em um tabuleiro vazio");
+    }
+
+    const int linha_norm = ((posicao.linha % n_linhas) + n_linhas) % n_linhas;
+    const int coluna_norm = ((posicao.coluna % n_colunas) + n_colunas) % n_colunas;
+
+    return { linha_norm, coluna_norm };
+
+}
+
 
 
 bool Tabuleiro::posicao_valida(Posicao posicao) const {

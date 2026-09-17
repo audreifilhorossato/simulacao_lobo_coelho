@@ -16,6 +16,8 @@ public:
 
 	std::size_t get_linhas() const;
 	std::size_t get_colunas() const;
+
+	Posicao normatizar_posicao(Posicao posicao) const;
 private:
 
 	std::vector<std::vector<Celula>> celulas;

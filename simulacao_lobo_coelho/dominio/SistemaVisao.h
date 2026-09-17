@@ -4,6 +4,7 @@
 
 #include <optional>
 #include <vector>
+#include <cstdlib>
 
 struct CelulaObservada{
 	Posicao posicao{ 0,0 };

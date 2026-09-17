@@ -1,7 +1,10 @@
 #include "Interface.h"
 
-Interface::Interface()
-    : janela(
+Interface::Interface(std::size_t linhas, std::size_t colunas, float tamanho_celula)
+    : LINHAS(linhas),
+    COLUNAS(colunas),
+    TAMANHO_CELULA(tamanho_celula),
+    janela(
         sf::VideoMode({
             static_cast<unsigned int>(COLUNAS * TAMANHO_CELULA),
             static_cast<unsigned int>(LINHAS * TAMANHO_CELULA)

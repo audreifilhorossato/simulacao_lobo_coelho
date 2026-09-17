@@ -1,5 +1,6 @@
 #pragma onde
 #include "dominio/Mundo.h"
+#include "simulacao/SistemaDecisao.h"
 
 #include <random>
 #include <cmath>
@@ -7,6 +8,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <map>
+#include <optinal>
 
 class Simulacao {
 	public:
@@ -29,9 +32,12 @@ class Simulacao {
 		std::uint64_t tick_numero;
 
 		std::mt19937 gerador;
+		SistemaDecisao sistema_decisao;
 
+		void resolver_conflitos(std::vector<Acao> acoes);
 		void gerar_plantas();
-		void processar_animais();
+		std::vector<Acao> processar_animais();
+		void matar_animais();
 		double probabilidade_nascimento_planta;
 
 		void tick_atualizar();

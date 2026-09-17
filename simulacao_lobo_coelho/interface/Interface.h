@@ -6,16 +6,14 @@
 
 class Interface {
     public:
-        Interface();
+        Interface(std::size_t linhas, std::size_t colunas, float tamanho_celula);
         void processar_eventos();
         bool esta_aberta() const;
         void desenhar(const Mundo& mundo);
 
     private:
-
-        static constexpr unsigned int COLUNAS = 30;
-        static constexpr unsigned int LINHAS = 30;
-        static constexpr float TAMANHO_CELULA = 20.0f;
-
+        const float TAMANHO_CELULA;
+        const int LINHAS;
+        const int COLUNAS;
         sf::RenderWindow janela;
 };

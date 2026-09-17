@@ -26,43 +26,51 @@ void Mundo::remover_animal(AnimalId id) {
 
 VisaoAnimal Mundo::observar(Posicao centro, int raio) const {
 	VisaoAnimal visao;
-	visao.centro = centro;
-
 	if (raio < 0){
 		raio = 0;
 	}
 
-	for (int i = visao.centro.linha - raio; i <= visao.centro.linha + raio; i++) {
-		for (int j = visao.centro.coluna - raio; j <= visao.centro.coluna + raio; j++) {
-			int dist_linha = i - raio;
-			int dist_coluna = j - raio;
+	if (tabuleiro.get_linhas() == 0 || tabuleiro.get_colunas() == 0){
+		return visao;
+	}
 
-			if ((dist_linha * dist_linha) + (dist_coluna * dist_coluna) <= raio) {
-				std::size_t n_linhas = tabuleiro.get_linhas();
-				std::size_t n_colunas = tabuleiro.get_colunas();
-				if (i > n_linhas){
-					i = i - n_linhas;
-				}
-				if (j > n_colunas) {
-					i = i - n_colunas;
-				}
+	
+	centro = tabuleiro.normatizar_posicao(centro);
+	visao.centro = centro;
+
+	for (int i = centro.linha - raio; i < centro.linha + raio ; i++){
+		for (int j = centro.coluna - raio; j < centro.coluna + raio; j++) {
+			const int dist_linha = i - centro.linha; 
+			const int dist_coluna = j - centro.coluna;
+			if ((dist_linha * dist_linha) + (dist_coluna * dist_coluna) <= (raio * raio)) {
 				CelulaObservada observada;
+				observada.existe = true;
 
-				observada.posicao_relativa = { dist_linha,dist_coluna };
-				observada.posicao = { i,j };
+				observada.posicao_relativa = {dist_linha,dist_coluna};
+				observada.posicao = tabuleiro.normatizar_posicao({ i,j });
+
+				const Celula& celula = tabuleiro.obter(observada.posicao); 
+				observada.tem_planta = celula.tem_planta; 
+				observada.animal_id = celula.animalId;
+
+				if (celula.animalId.has_value()) { 
+					const Animal* animal_encontrado = buscar_animal(celula.animalId.value()); 
+					if (animal_encontrado != nullptr) { 
+						observada.especie_animal = animal_encontrado->get_especie(); 
+					} 
+				}
 				visao.celulas.push_back(observada);
 			}
 		}
 	}
-
+	return visao;
 }
 
 std::optional<AnimalId> Mundo::adicionar_animal(Especie especie, Posicao posicao, int energia_inicial, Tick tick_atual) {
-	if (!tabuleiro.posicao_valida(posicao)) {
-		return std::nullopt;
-	}
+	
+	const Posicao posicao_norm = tabuleiro.normatizar_posicao(posicao);
 
-	Celula& celula = tabuleiro.obter(posicao);
+	Celula& celula = tabuleiro.obter(posicao_norm);
 
 	if (celula.animalId.has_value()) {
 		return std::nullopt;
@@ -115,7 +123,9 @@ const Tabuleiro& Mundo::get_tabuleiro() const{
 }
 
 bool Mundo::adicionar_planta(Posicao posicao) {
-	Celula& celula = tabuleiro.obter(posicao);
+	const Posicao posicao_norm = tabuleiro.normatizar_posicao(posicao);
+	
+	Celula& celula = tabuleiro.obter(posicao_norm);
 	if (celula.tem_planta) {
 		return false;
 	}

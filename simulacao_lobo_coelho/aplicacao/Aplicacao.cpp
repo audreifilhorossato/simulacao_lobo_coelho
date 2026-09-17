@@ -1,6 +1,6 @@
 #include "aplicacao/Aplicacao.h"
 
-Aplicacao::Aplicacao():simulacao(30,30),interface(){};
+Aplicacao::Aplicacao():simulacao(30,30),interface(30,30, 20.0){};
 
 void Aplicacao::executar() {
 	using Relogio = std::chrono::steady_clock;
