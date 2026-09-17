@@ -37,6 +37,7 @@ VisaoAnimal Mundo::observar(Posicao centro, int raio) const {
 	
 	centro = tabuleiro.normatizar_posicao(centro);
 	visao.centro = centro;
+	visao.celula_central = tabuleiro.obter({ centro.linha, centro.coluna });
 
 	for (int i = centro.linha - raio; i <= centro.linha + raio ; i++){
 		for (int j = centro.coluna - raio; j <= centro.coluna + raio; j++) {
@@ -174,5 +175,16 @@ bool Mundo::adicionar_planta(Posicao posicao) {
 		return false;
 	}
 	celula.tem_planta = true;
+	return true;
+}
+
+bool Mundo::remover_planta(Posicao posicao) {
+	const Posicao posicao_norm = tabuleiro.normatizar_posicao(posicao);
+
+	Celula& celula = tabuleiro.obter(posicao_norm);
+	if (!celula.tem_planta) {
+		return false;
+	}
+	celula.tem_planta = false;
 	return true;
 }

@@ -23,6 +23,7 @@ class Mundo {
 
 		const Tabuleiro& get_tabuleiro() const;
 
+		bool remover_planta(Posicao posicao);
 		bool adicionar_planta(Posicao posicao);
 
 		VisaoAnimal observar(Posicao centro,int raio) const;

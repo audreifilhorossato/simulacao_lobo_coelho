@@ -5,6 +5,7 @@
 #include "dominio/SistemaVisao.h"
 
 #include <random>
+#include<map>
 
 class SistemaDecisao {
 	public:

@@ -9,8 +9,17 @@ Acao SistemaDecisao::decidir_coelho(
 {
     std::vector<Posicao> destinos_possiveis;
 
+    if (visao.celula_central.tem_planta) {
+        return{
+            TipoAcao::Comer,
+            coelho.get_id(),
+            coelho.get_posicao()
+        };
+    }
+
     for (const CelulaObservada& celula : visao.celulas) {
         const float distancia_quadrada = (celula.posicao_relativa.coluna * celula.posicao_relativa.coluna) + (celula.posicao_relativa.linha) * (celula.posicao_relativa.linha);
+        
         if (distancia_quadrada > 2) {
             continue;
         }

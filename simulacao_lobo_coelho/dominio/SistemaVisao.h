@@ -1,6 +1,7 @@
 #pragma once
 
 #include "dominio/Tipos.h"
+#include "dominio/Celula.h"
 
 #include <optional>
 #include <vector>
@@ -19,5 +20,6 @@ struct CelulaObservada{
 
 struct VisaoAnimal{
 	Posicao centro{ 0, 0 };
+	Celula celula_central;
 	std::vector<CelulaObservada> celulas;
 };

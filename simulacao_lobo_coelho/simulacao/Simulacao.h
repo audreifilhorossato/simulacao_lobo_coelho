@@ -11,6 +11,8 @@
 #include <map>
 #include <vector>
 #include <utility>
+#include <iostream>
+#include <optional>
 
 class Simulacao {
 	public:

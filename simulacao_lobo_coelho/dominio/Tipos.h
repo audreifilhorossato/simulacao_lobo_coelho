@@ -18,7 +18,8 @@ enum class Especie{
 enum class TipoAcao
 {
 	Esperar,
-	Mover
+	Mover,
+	Comer
 };
 
 struct Acao
