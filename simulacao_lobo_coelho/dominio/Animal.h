@@ -8,8 +8,8 @@ class Animal {
 			AnimalId id,
 			Especie especie,
 			Posicao posicao,
-			Tick tick_nascimento,
-			int energia_inicial
+			int energia_inicial,
+			Tick tick_nascimento
 		);
 
 		AnimalId get_id() const;

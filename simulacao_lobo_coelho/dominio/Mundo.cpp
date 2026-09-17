@@ -38,8 +38,8 @@ VisaoAnimal Mundo::observar(Posicao centro, int raio) const {
 	centro = tabuleiro.normatizar_posicao(centro);
 	visao.centro = centro;
 
-	for (int i = centro.linha - raio; i < centro.linha + raio ; i++){
-		for (int j = centro.coluna - raio; j < centro.coluna + raio; j++) {
+	for (int i = centro.linha - raio; i <= centro.linha + raio ; i++){
+		for (int j = centro.coluna - raio; j <= centro.coluna + raio; j++) {
 			const int dist_linha = i - centro.linha; 
 			const int dist_coluna = j - centro.coluna;
 			if ((dist_linha * dist_linha) + (dist_coluna * dist_coluna) <= (raio * raio)) {
@@ -81,7 +81,7 @@ std::optional<AnimalId> Mundo::adicionar_animal(Especie especie, Posicao posicao
 	Animal novo_animal(
 		novo_id,
 		especie,
-		posicao,
+		posicao_norm,
 		energia_inicial,
 		tick_atual
 	);
@@ -120,6 +120,50 @@ const std::unordered_map<AnimalId, Animal>& Mundo::get_animais() const{
 
 const Tabuleiro& Mundo::get_tabuleiro() const{
 	return tabuleiro;
+}
+
+bool Mundo::mover_animal(AnimalId id, Posicao destino) {
+	std::unordered_map<AnimalId, Animal>::iterator encontrado = animais.find(id);
+
+	if (encontrado == animais.end()) {
+		return false;
+	}
+
+	destino = tabuleiro.normatizar_posicao(destino);
+
+	Animal& animal = encontrado->second;
+
+	const Posicao origem = animal.get_posicao();
+
+	if (!tabuleiro.posicao_valida(origem)) {
+		return false;
+	}
+
+	if (origem.linha == destino.linha && origem.coluna == destino.coluna){
+		return false;
+	}
+
+	Celula& celula_origem =
+		tabuleiro.obter(origem);
+
+	Celula& celula_destino =
+		tabuleiro.obter(destino);
+
+	if (!celula_origem.animalId.has_value() || celula_origem.animalId.value() != id){
+		return false;
+	}
+
+	if (celula_destino.animalId.has_value()){
+		return false;
+	}
+
+	celula_origem.animalId.reset();
+	celula_destino.animalId = id;
+
+	animal.definir_posicao(destino);
+
+	return true;
+
 }
 
 bool Mundo::adicionar_planta(Posicao posicao) {

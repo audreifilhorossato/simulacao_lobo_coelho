@@ -1,4 +1,4 @@
-#pragma onde
+#pragma once
 #include "dominio/Mundo.h"
 #include "simulacao/SistemaDecisao.h"
 
@@ -9,7 +9,8 @@
 #include <cstdint>
 #include <string>
 #include <map>
-#include <optinal>
+#include <vector>
+#include <utility>
 
 class Simulacao {
 	public:
@@ -34,7 +35,9 @@ class Simulacao {
 		std::mt19937 gerador;
 		SistemaDecisao sistema_decisao;
 
-		void resolver_conflitos(std::vector<Acao> acoes);
+		std::vector<Acao> resolver_conflitos(const std::vector<Acao>& acoes);
+		void executar_acoes(const std::vector<Acao>& acoes);
+
 		void gerar_plantas();
 		std::vector<Acao> processar_animais();
 		void matar_animais();

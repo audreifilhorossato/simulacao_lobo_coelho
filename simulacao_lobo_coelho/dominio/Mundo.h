@@ -29,6 +29,8 @@ class Mundo {
 
 		const std::unordered_map<AnimalId, Animal>& get_animais() const;
 
+		bool mover_animal(AnimalId id, Posicao destino);
+
 	private:
 		Tabuleiro tabuleiro;
 		std::unordered_map<AnimalId, Animal> animais;

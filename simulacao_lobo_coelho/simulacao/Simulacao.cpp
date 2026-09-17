@@ -4,7 +4,7 @@
 Simulacao::Simulacao(std::size_t linhas, std::size_t colunas) 
 	:mundo(linhas, colunas), 
 	tempo_acumulado(0.0), 
-	tick_duracao(0.1), 
+	tick_duracao(0.5), 
 	tick_numero(0),
 	gerador(1), //semente fixa por enquanto
 	probabilidade_nascimento_planta(0.001) 
@@ -12,22 +12,22 @@ Simulacao::Simulacao(std::size_t linhas, std::size_t colunas)
 	mundo.adicionar_animal(
 		Especie::Coelho,
 		{ 2, 3 },
-		tick_numero,
-		20
+		20,
+		tick_numero
 	);
 
 	mundo.adicionar_animal(
 		Especie::Coelho,
 		{ 7, 8 },
-		tick_numero,
-		20
+		20,
+		tick_numero
 	);
 
 	mundo.adicionar_animal(
 		Especie::Coelho,
 		{ 11, 15 },
-		tick_numero,
-		20
+		20,
+		tick_numero
 	);
 }
 
@@ -36,14 +36,20 @@ const Tick Simulacao::get_tick_numero() const{
 }
 
 void Simulacao::tick_atualizar() {
-	matar_animais();
-	resolver_conflitos(processar_animais());
-	gerar_plantas();
+
 	++tick_numero;
+	matar_animais();
+
+	const std::vector<Acao> propostas =processar_animais();
+
+	const std::vector<Acao> aprovadas = resolver_conflitos(propostas);
+
+	executar_acoes(aprovadas);
+
+	gerar_plantas();
 }
 
-void Simulacao::resolver_conflitos(std::vector<Acao> acoes) {
-	std::vector<Acao> acoes;
+std::vector<Acao> Simulacao::resolver_conflitos(const std::vector<Acao>& acoes) {
 
 	std::map<std::pair<int, int>, std::vector<Acao>> grupos_por_destino;
 
@@ -75,6 +81,7 @@ void Simulacao::resolver_conflitos(std::vector<Acao> acoes) {
 			}
 			if (animal->get_energia() > maior_energia) {
 				prioritaria = matriz_org_posicao[i][j];
+				maior_energia = animal->get_energia();
 				continue;
 			}
 			if (animal->get_energia() == maior_energia) {
@@ -88,6 +95,15 @@ void Simulacao::resolver_conflitos(std::vector<Acao> acoes) {
 		acoes_fazer.push_back(prioritaria.value());
 	}
 
+	return acoes_fazer;
+}
+
+void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
+	for (const Acao& acao : acoes){
+		if (acao.tipo == TipoAcao::Mover){
+			mundo.mover_animal(acao.animal_id,acao.destino);
+		}
+	}
 }
 
 void Simulacao::matar_animais() {
@@ -108,6 +124,7 @@ void Simulacao::matar_animais() {
 		mundo.remover_animal(id);
 	}
 }
+
 const Mundo& Simulacao::get_mundo() const{
 	return mundo;
 }

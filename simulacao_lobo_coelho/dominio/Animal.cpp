@@ -4,15 +4,14 @@ Animal::Animal(
 	AnimalId id,
 	Especie especie,
 	Posicao posicao,
-	Tick tick_nascimento,
-	int energia_inicial
+	int energia_inicial,
+	Tick tick_nascimento
 ):
 	id(id),
 	especie(especie),
 	posicao(posicao),
 	energia(energia_inicial),
 	tick_nascimento(tick_nascimento),
-	idade(0),
 	tempo_reproducao(0),
 	vivo(true)
 {

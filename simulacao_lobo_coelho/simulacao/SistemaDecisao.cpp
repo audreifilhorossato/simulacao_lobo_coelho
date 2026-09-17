@@ -10,7 +10,7 @@ Acao SistemaDecisao::decidir_coelho(
     std::vector<Posicao> destinos_possiveis;
 
     for (const CelulaObservada& celula : visao.celulas) {
-        const float distancia_quadrada = (celula.posicao.coluna * celula.posicao.coluna) + (celula.posicao.linha) * (celula.posicao.linha);
+        const float distancia_quadrada = (celula.posicao_relativa.coluna * celula.posicao_relativa.coluna) + (celula.posicao_relativa.linha) * (celula.posicao_relativa.linha);
         if (distancia_quadrada > 2) {
             continue;
         }
@@ -58,12 +58,4 @@ Acao SistemaDecisao::decidir(
         animal.get_id(),
         animal.get_posicao()
     };
-}
-
-Acao SistemaDecisao::decidir_coelho(
-    const Animal& coelho,
-    const VisaoAnimal& visao,
-    std::mt19937& gerador
-) const{
-    return;
 }
