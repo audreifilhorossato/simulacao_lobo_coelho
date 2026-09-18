@@ -65,9 +65,6 @@
     <ClInclude Include="dominio\Animal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="dominio\Acoes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="simulacao\SistemaDecisao.h">
       <Filter>Header Files</Filter>
     </ClInclude>
