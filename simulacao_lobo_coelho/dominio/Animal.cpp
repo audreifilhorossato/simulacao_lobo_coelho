@@ -17,18 +17,18 @@ Animal::Animal(
 {
 };
 
+
 void Animal::alterar_vivo() {
 	vivo = !vivo;
 }
 
+// Retorna 0 para evitar idade negativa caso o tick atual seja anterior ao nascimento
 Tick Animal::get_idade(Tick tick_atual) const {
 	if (tick_atual <= tick_nascimento) {
 		return 0;
 	}
-	else
-	{
-		return tick_atual - tick_nascimento;
-	}
+	return tick_atual - tick_nascimento;
+	
 }
 
 
@@ -41,18 +41,16 @@ void Animal::ganhar_energia(int ganho) {
 }
 
 bool Animal::esta_sem_energia() const{
-	if (energia <= 0) {
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return energia <= 0;
 }
+
 
 void Animal::definir_posicao(Posicao nova_posicao) {
 	posicao = nova_posicao;
 }
+
+// --- Getters simples: apenas retornam o valor do atributo correspondente,
+// sem lógica adicional. Documentação completa de cada um está no Animal.h. ---
 
 AnimalId Animal::get_id() const {
 	return id;
