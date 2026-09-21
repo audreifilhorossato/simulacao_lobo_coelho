@@ -4,9 +4,9 @@
  * @brief Representa um animal na simulação.
  *
  * Um Animal possui identificador, espécie, posição no ambiente, energia
- * (recurso vital) e um indicador de estado de vida. A classe é responsável
+ * e um indicador de estado de vida. A classe é responsável
  * por armazenar esses atributos e expor operações básicas de consulta
- * e manutenção (ganho/gasto de energia, atualização de posição, etc.).
+ * e manutenção.
  */
 
 #include "dominio/Tipos.h"
@@ -47,7 +47,7 @@ class Animal {
 		 *
 		 * @param tick_atual Tick atual da simulação.
 		 * @return Diferença entre @p tick_atual e o tick de nascimento,
-		 *         ou 0 caso @p tick_atual seja anterior (ou igual) ao
+		 *         ou 0 caso @p tick_atual seja anterior ou igual ao
 		 *         nascimento, evitando idade negativa.
 		 */
 		Tick get_idade(Tick tick_atual) const;
@@ -67,9 +67,8 @@ class Animal {
 		/**
 		 * @brief Reduz a energia do animal.
 		 *
-		 * @param gasto Quantidade de energia a ser subtraída.
-		 * @note Não há verificação de limite inferior aqui; use
-		 *       esta_sem_energia() para checar se o animal ficou sem energia.
+		 * @param gasto quantidade de energia a ser subtraída.
+		 * @note Não há verificação de limite inferior aqui;
 		 */
 		void gastar_energia(int gasto);
 

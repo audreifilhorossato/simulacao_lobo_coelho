@@ -13,7 +13,7 @@
  * Além das informações equivalentes às de uma Celula (presença de planta e
  * de animal), guarda a posição absoluta da célula no ambiente, sua posição
  * relativa ao animal observador, e um indicador de que a célula existe de
- * fato (por exemplo, para descartar posições fora dos limites do ambiente).
+ * fato.
  */
 struct CelulaObservada{
 	Posicao posicao{ 0,0 };				///< Posição absoluta da célula observada no tabuleiro.
@@ -21,7 +21,7 @@ struct CelulaObservada{
 
 	bool existe = false;
 	bool tem_planta = false;
-
+	int dist_quadrada = 0;
 	std::optional<AnimalId> animal_id = std::nullopt;		///< Identificador do animal presente na célula observada, se houver.
 	std::optional<Especie> especie_animal = std::nullopt;	///< Espécie do animal presente na célula observada, se houver.
 };

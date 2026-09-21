@@ -1,8 +1,7 @@
 #pragma once
 
 /**
- * @brief Tipos básicos e estruturas de dados compartilhadas pelo domínio
- *        da simulação (identificadores, posição, espécies e ações).
+ * @brief Tipos básicos e estruturas de dados compartilhadas pelo domínio da simulação.
  */
 
 #include <cstdint>
@@ -14,8 +13,7 @@ using AnimalId = std::uint32_t;
 using Tick = std::uint64_t;
 
 /**
- * @brief Representa uma posição no ambiente da simulação, dada por
- *        linha e coluna em uma grade.
+ * @brief Representa uma posição no ambiente da simulação, dada por linha e coluna em uma grade.
  */
 struct Posicao{
 	int linha;
@@ -44,4 +42,16 @@ struct Acao
 	TipoAcao tipo;			///< Tipo da ação a ser executada.
 	AnimalId animal_id;		///< Identificador do animal que executa a ação.
 	Posicao destino;		///< Posição de destino associada à ação (ex.: célula para onde mover ou da qual comer).
+};
+
+/**
+ * @brief Representa um vetor e define suas operaçoes.
+ */
+struct Vec2 {
+	double x;
+	double y;
+
+	Vec2 operator+(const Vec2& o) const { return { x + o.x, y + o.y }; }
+	Vec2 operator-(const Vec2& o) const { return { x - o.x, y - o.y }; }
+	Vec2 operator*(double k) const { return { (x * k), (y * k) }; }
 };

@@ -49,6 +49,7 @@ VisaoAnimal Mundo::observar(Posicao centro, int raio) const {
 
 				observada.posicao_relativa = {dist_linha,dist_coluna};
 				observada.posicao = tabuleiro.normatizar_posicao({ i,j });
+				observada.dist_quadrada = (observada.posicao_relativa.coluna * observada.posicao_relativa.coluna) + (observada.posicao_relativa.linha * observada.posicao_relativa.linha);
 
 				const Celula& celula = tabuleiro.obter(observada.posicao); 
 				observada.tem_planta = celula.tem_planta; 

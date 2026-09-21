@@ -5,12 +5,13 @@ namespace{
 	constexpr int CUSTO_POR_TICK_COELHO = 1;
 	constexpr int IDADE_MAX_COELHO = 200;
 	constexpr int ENERGIA_DA_PLANTA = 30;
+	constexpr int RAIO_VISAO_COELHO = 4;
 }
 
 Simulacao::Simulacao(std::size_t linhas, std::size_t colunas) 
 	:mundo(linhas, colunas), 
 	tempo_acumulado(0.0), 
-	tick_duracao(0.2), 
+	tick_duracao(0.), 
 	tick_numero(0),
 	gerador(1), //semente fixa por enquanto
 	probabilidade_nascimento_planta(0.001) 
@@ -35,6 +36,21 @@ Simulacao::Simulacao(std::size_t linhas, std::size_t colunas)
 		100,
 		tick_numero
 	);
+
+	mundo.adicionar_animal(
+		Especie::Coelho,
+		{ 20, 3 },
+		100,
+		tick_numero
+	);
+
+	mundo.adicionar_animal(
+		Especie::Coelho,
+		{ 24, 6 },
+		100,
+		tick_numero
+	);
+
 }
 
 void Simulacao::tick_atualizar() {
@@ -194,12 +210,6 @@ std::vector<Acao> Simulacao::processar_animais() {
 	std::vector<Acao> acoes;
 
 	for (const auto& [id, animal] : mundo.get_animais()) {
-		
-		const VisaoAnimal visao = mundo.observar(animal.get_posicao(), 2);
-
-		const Acao acao = sistema_decisao.decidir(animal, visao, gerador);
-
-		acoes.push_back(acao);
 
 		Animal* animal_ponteiro = mundo.buscar_animal(animal.get_id());
 
@@ -207,9 +217,18 @@ std::vector<Acao> Simulacao::processar_animais() {
 			continue;
 		}
 
+		int raio_visao = 0; ///< Raio 0 como padrão
 		if (animal_ponteiro->get_especie() == Especie::Coelho) {
 			animal_ponteiro->gastar_energia(CUSTO_POR_TICK_COELHO);
+			raio_visao = RAIO_VISAO_COELHO;
+			
 		}
+
+		const VisaoAnimal visao = mundo.observar(animal.get_posicao(), raio_visao);
+
+		const Acao acao = sistema_decisao.decidir(animal, visao, gerador);
+
+		acoes.push_back(acao);
 	}
 
 	return acoes;
