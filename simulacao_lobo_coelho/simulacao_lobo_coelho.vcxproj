@@ -30,7 +30,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="aplicacao\Aplicacao.h" />
-    <ClInclude Include="dominio\Acoes.h" />
     <ClInclude Include="dominio\Animal.h" />
     <ClInclude Include="dominio\Celula.h" />
     <ClInclude Include="dominio\Mundo.h" />
