@@ -11,7 +11,7 @@ namespace{
 Simulacao::Simulacao(std::size_t linhas, std::size_t colunas) 
 	:mundo(linhas, colunas), 
 	tempo_acumulado(0.0), 
-	tick_duracao(0.), 
+	tick_duracao(0.2), 
 	tick_numero(0),
 	gerador(1), //semente fixa por enquanto
 	probabilidade_nascimento_planta(0.001) 
