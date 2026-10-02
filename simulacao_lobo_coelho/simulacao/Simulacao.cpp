@@ -1,12 +1,6 @@
 #include "simulacao/Simulacao.h"
 
-namespace{
-	constexpr int CUSTO_MOVIMENTO_COELHO = 1;
-	constexpr int CUSTO_POR_TICK_COELHO = 1;
-	constexpr int IDADE_MAX_COELHO = 200;
-	constexpr int ENERGIA_DA_PLANTA = 30;
-	constexpr int RAIO_VISAO_COELHO = 4;
-}
+
 
 Simulacao::Simulacao(std::size_t linhas, std::size_t colunas) 
 	:mundo(linhas, colunas), 
@@ -51,6 +45,12 @@ Simulacao::Simulacao(std::size_t linhas, std::size_t colunas)
 		tick_numero
 	);
 
+	mundo.adicionar_animal(
+		Especie::Lobo,
+		{ 3, 3 },
+		100,
+		tick_numero
+	);
 }
 
 void Simulacao::tick_atualizar() {
@@ -160,6 +160,22 @@ void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
 				animal_ponteiro->ganhar_energia(ENERGIA_DA_PLANTA);
 			}
 		}
+
+		if (acao.tipo == TipoAcao::Reproduzir) {
+
+			Animal* animal_ponteiro = mundo.buscar_animal(acao.animal_id);
+
+			mundo.adicionar_animal(
+				animal_ponteiro->get_especie(),
+				acao.destino,
+				(animal_ponteiro->get_energia())/2,
+				tick_numero
+			);
+
+			if (animal_ponteiro->get_especie() == Especie::Coelho) {
+				animal_ponteiro->gastar_energia(CUSTO_REPRODUZIR_COELHO);
+			}
+		}
 	}
 }
 
@@ -226,7 +242,7 @@ std::vector<Acao> Simulacao::processar_animais() {
 
 		const VisaoAnimal visao = mundo.observar(animal.get_posicao(), raio_visao);
 
-		const Acao acao = sistema_decisao.decidir(animal, visao, gerador);
+		const Acao acao = sistema_decisao.decidir(animal, visao, gerador,tick_numero);
 
 		acoes.push_back(acao);
 	}

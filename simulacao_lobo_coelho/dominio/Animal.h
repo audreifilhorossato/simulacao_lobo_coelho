@@ -99,6 +99,7 @@ class Animal {
 		Tick tick_nascimento;	///< Tick em que o animal nasceu.
 
 		int tempo_reproducao;	///< Ticks acumulados desde a última reprodução.
+		int ultima_reproducao = 0;
 		int energia;			///< Energia atual do animal.
 		bool vivo;				///< Estado de vida do animal (true = vivo).
 };

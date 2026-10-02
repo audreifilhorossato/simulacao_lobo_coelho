@@ -6,6 +6,14 @@
 
 #include <cstdint>
 
+constexpr int CUSTO_MOVIMENTO_COELHO = 1;
+constexpr int CUSTO_POR_TICK_COELHO = 1;
+constexpr int CUSTO_REPRODUZIR_COELHO = 40;
+constexpr int IDADE_MAX_COELHO = 200;
+constexpr int ENERGIA_MAX_COELHO = 100;
+constexpr int ENERGIA_DA_PLANTA = 30;
+constexpr int RAIO_VISAO_COELHO = 4;
+
  /// Identificador único de um animal na simulação.
 using AnimalId = std::uint32_t;
 
@@ -31,7 +39,8 @@ enum class TipoAcao
 {
 	Esperar,
 	Mover,
-	Comer
+	Comer,
+	Reproduzir
 };
 
 /**
