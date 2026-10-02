@@ -13,13 +13,15 @@ class SistemaDecisao {
 		Acao decidir(
 			const Animal& animal,
 			const VisaoAnimal& visaoanimal,
-			std::mt19937& gerador
+			std::mt19937& gerador,
+			const int numero_tick
 		) const;
 	private:
 		int direcao_mais_proxima_vetor_direcao(const Vec2 vetor_direcao, const std::vector<Vec2> destinos_possiveis) const;
 		Acao decidir_coelho(
 			const Animal& coelho,
 			const VisaoAnimal& visao,
-			std::mt19937& gerador
+			std::mt19937& gerador,
+			const int numero_tick
 		) const;
 };

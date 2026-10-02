@@ -38,6 +38,9 @@ void Animal::gastar_energia(int gasto) {
 
 void Animal::ganhar_energia(int ganho) {
 	energia += ganho;
+	if (energia > ENERGIA_MAX_COELHO) {
+		energia = ENERGIA_MAX_COELHO;
+	}
 }
 
 bool Animal::esta_sem_energia() const{

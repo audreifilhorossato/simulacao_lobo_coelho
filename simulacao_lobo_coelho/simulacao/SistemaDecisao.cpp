@@ -24,11 +24,16 @@ int SistemaDecisao::direcao_mais_proxima_vetor_direcao(const Vec2 vetor_direcao,
 Acao SistemaDecisao::decidir_coelho(
     const Animal& coelho,
     const VisaoAnimal& visao,
-    std::mt19937& gerador
+    std::mt19937& gerador,
+    const int numero_tick
 ) const
 {
     std::vector<Vec2> direcoes_possiveis;
     std::vector<Posicao> destinos_possiveis;
+
+
+    std::uniform_int_distribution<int> chance(0, 100);
+    const int percentagem = chance(gerador);
 
     if (visao.celula_central.tem_planta) {
         return{
@@ -38,7 +43,7 @@ Acao SistemaDecisao::decidir_coelho(
         };
     }
 
-    Vec2 vetor_direcao = { 0.0, 0.0};
+    Vec2 vetor_direcao = {0.0, 0.0};
 
     for (const CelulaObservada& celula : visao.celulas) {
 
@@ -65,15 +70,19 @@ Acao SistemaDecisao::decidir_coelho(
         return { TipoAcao::Esperar, coelho.get_id(), coelho.get_posicao() };
     }
 
+    std::uniform_int_distribution<int> dist_int(0, destinos_possiveis.size() - 1);
+
+    if (coelho.get_energia() > 50 && percentagem > 90 && coelho.get_idade(numero_tick) > IDADE_MAX_COELHO/3) {
+        return{ TipoAcao::Reproduzir, coelho.get_id(), destinos_possiveis.at(dist_int(gerador)) };
+    }
+
     const double eps = 1e-9;
     if ((
         (vetor_direcao.x == 0.0) && (vetor_direcao.y == 0.0)) || 
         (std::abs(vetor_direcao.x) < eps && std::abs(vetor_direcao.y) < eps
     )) {  
-
-        std::bernoulli_distribution chance(0.6); //60% de ser True
-        if (chance(gerador)) {
-            std::uniform_int_distribution<int> dist_int(0, destinos_possiveis.size() - 1);
+        if (percentagem < 60) {
+      
             return {
                 TipoAcao::Mover,
                 coelho.get_id(),
@@ -88,17 +97,6 @@ Acao SistemaDecisao::decidir_coelho(
             };
         }
     }
-
-    // ruído: gira o vetor de direção
-    const double ruido_max = 20.0 * std::acos(-1.0) / 180.0;
-    std::uniform_real_distribution<double> ruido(-ruido_max, ruido_max);
-    const double a = ruido(gerador);
-    const double c = std::cos(a);
-    const double s = std::sin(a);
-    vetor_direcao = {
-        vetor_direcao.x * c - vetor_direcao.y * s,
-        vetor_direcao.x * s + vetor_direcao.y * c
-    };
 
 
     const int indice = direcao_mais_proxima_vetor_direcao(vetor_direcao, direcoes_possiveis);
@@ -118,11 +116,12 @@ Acao SistemaDecisao::decidir_coelho(
 Acao SistemaDecisao::decidir(
     const Animal& animal,
     const VisaoAnimal& visao,
-    std::mt19937& gerador
+    std::mt19937& gerador,
+    const int numero_tick
 ) const {
     if (animal.get_especie() == Especie::Coelho)
     {
-        return decidir_coelho(animal, visao, gerador);
+        return decidir_coelho(animal, visao, gerador,numero_tick);
     }
 
     return {
