@@ -3,8 +3,28 @@
 Mundo::Mundo(std::size_t linhas, std::size_t colunas) 
 	:tabuleiro(linhas, colunas),
 	animais(),
+	carcacas(),
 	proximo_id(1)
 {}
+
+bool Mundo::remover_carcaca(AnimalId id) {
+	std::unordered_map<AnimalId, Carcaca>::iterator carcaca_encontrada = carcacas.find(id);
+	if (carcaca_encontrada == carcacas.end()) {
+		return false;
+	}
+
+	const Posicao posicao = carcaca_encontrada->second.get_posicao();
+
+	if (tabuleiro.posicao_valida(posicao)) {
+		Celula& celula = tabuleiro.obter(posicao);
+
+		if (celula.carcacaId.has_value() && celula.carcacaId.value() == id) {
+			celula.carcacaId.reset();
+		}
+	}
+	carcacas.erase(carcaca_encontrada);
+	return true;
+}
 
 void Mundo::remover_animal(AnimalId id) {
 	std::unordered_map<AnimalId, Animal>::iterator animal_encontrado = animais.find(id);
@@ -58,8 +78,14 @@ VisaoAnimal Mundo::observar(Posicao centro, int raio) const {
 				if (celula.animalId.has_value()) { 
 					const Animal* animal_encontrado = buscar_animal(celula.animalId.value()); 
 					if (animal_encontrado != nullptr) { 
-						observada.especie_animal = animal_encontrado->get_especie(); 
+						observada.especie_animal = animal_encontrado->get_especie();
 					} 
+				}
+				if (celula.carcacaId.has_value()) {
+					const Carcaca* carcaca_encontrada = buscar_carcaca(celula.carcacaId.value());
+					if (carcaca_encontrada != nullptr) {
+						observada.tem_carcaca = true;
+					}
 				}
 				visao.celulas.push_back(observada);
 			}
@@ -94,6 +120,22 @@ std::optional<AnimalId> Mundo::adicionar_animal(Especie especie, Posicao posicao
 	proximo_id++;
 
 	return novo_id;
+}
+
+const Carcaca* Mundo::buscar_carcaca(AnimalId id) const {
+	std::unordered_map<AnimalId, Carcaca>::const_iterator carcaca_encontrada = carcacas.find(id);
+	if (carcaca_encontrada == carcacas.end()) {
+		return nullptr;
+	}
+	return &carcaca_encontrada->second;
+}
+
+Carcaca* Mundo::buscar_carcaca(AnimalId id) {
+	std::unordered_map<AnimalId, Carcaca>::iterator carcaca_encontrada = carcacas.find(id);
+	if (carcaca_encontrada == carcacas.end()) {
+		return nullptr;
+	}
+	return &carcaca_encontrada->second;
 }
 
 const Animal* Mundo::buscar_animal(AnimalId id) const{
@@ -188,4 +230,29 @@ bool Mundo::remover_planta(Posicao posicao) {
 	}
 	celula.tem_planta = false;
 	return true;
+}
+
+std::optional<AnimalId> Mundo::adicionar_carcaca(const Animal& animal_morto, Tick tick_numero) {
+	const Posicao posicao_norm = tabuleiro.normatizar_posicao(animal_morto.get_posicao());
+
+	Celula& celula = tabuleiro.obter(posicao_norm);
+
+	if (celula.carcacaId.has_value()) {
+		return std::nullopt;
+	}
+
+	Carcaca nova_carcaca(
+		animal_morto,
+		tick_numero
+	);
+
+	carcacas.emplace(animal_morto.get_id(), nova_carcaca);
+
+	celula.carcacaId = animal_morto.get_id();
+
+	return animal_morto.get_id();
+}
+
+const std::unordered_map<AnimalId, Carcaca>& Mundo::get_carcacas() const {
+	return carcacas;
 }

@@ -24,4 +24,10 @@ class SistemaDecisao {
 			std::mt19937& gerador,
 			const int numero_tick
 		) const;
+		Acao decidir_lobo(
+			const Animal& lobo,
+			const VisaoAnimal& visao,
+			std::mt19937& gerador,
+			const int numero_tick
+		) const;
 };

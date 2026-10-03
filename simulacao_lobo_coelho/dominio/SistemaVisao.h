@@ -21,7 +21,9 @@ struct CelulaObservada{
 
 	bool existe = false;
 	bool tem_planta = false;
+	bool tem_carcaca = false;
 	int dist_quadrada = 0;
+
 	std::optional<AnimalId> animal_id = std::nullopt;		///< Identificador do animal presente na célula observada, se houver.
 	std::optional<Especie> especie_animal = std::nullopt;	///< Espécie do animal presente na célula observada, se houver.
 };

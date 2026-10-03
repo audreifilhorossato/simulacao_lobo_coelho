@@ -48,7 +48,7 @@ Simulacao::Simulacao(std::size_t linhas, std::size_t colunas)
 	mundo.adicionar_animal(
 		Especie::Lobo,
 		{ 3, 3 },
-		100,
+		3000,
 		tick_numero
 	);
 }
@@ -56,7 +56,11 @@ Simulacao::Simulacao(std::size_t linhas, std::size_t colunas)
 void Simulacao::tick_atualizar() {
 
 	++tick_numero;
-	matar_animais();
+	const std::vector<AnimalId> animais_mortos = matar_animais();
+
+	gerar_carcacas(animais_mortos);
+
+	destruir_carcacas();
 
 	const std::vector<Acao> propostas = processar_animais();
 
@@ -65,6 +69,23 @@ void Simulacao::tick_atualizar() {
 	executar_acoes(aprovadas);
 
 	gerar_plantas();
+}
+
+void Simulacao::destruir_carcacas() {
+	std::vector<AnimalId> carcacas_para_destruir;
+	for (const auto& par : mundo.get_carcacas()) {
+		const Carcaca& carcaca = par.second;
+		if (carcaca.get_idade(tick_numero) >= LIFETIME_CARCACA) {
+			carcacas_para_destruir.push_back(carcaca.get_id_original());
+		}
+		if (carcaca.get_energia_nutricional() <= 0) {
+			carcacas_para_destruir.push_back(carcaca.get_id_original());
+		}
+	}
+
+	for (const AnimalId id : carcacas_para_destruir) {
+		mundo.remover_carcaca(id);
+	}
 }
 
 const Tick Simulacao::get_tick_numero() const{
@@ -144,11 +165,11 @@ void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
 			if (animal_ponteiro->get_especie() == Especie::Coelho){
 				animal_ponteiro->gastar_energia(CUSTO_MOVIMENTO_COELHO);
 			}
+			else if (animal_ponteiro->get_especie() == Especie::Lobo){
+				animal_ponteiro->gastar_energia(CUSTO_MOVIMENTO_LOBO);
+			}
 		}
 		if (acao.tipo == TipoAcao::Comer){
-			if (!mundo.remover_planta(acao.destino)) {
-				continue;
-			}
 
 			Animal* animal_ponteiro = mundo.buscar_animal(acao.animal_id);
 
@@ -157,13 +178,39 @@ void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
 			}
 
 			if (animal_ponteiro->get_especie() == Especie::Coelho) {
+				if (!mundo.remover_planta(acao.destino)) {
+					continue;
+				}
 				animal_ponteiro->ganhar_energia(ENERGIA_DA_PLANTA);
+			}
+			else if (animal_ponteiro->get_especie() == Especie::Lobo) {
+				const Celula& celula_alvo = mundo.get_tabuleiro().obter(acao.destino);
+				const std::optional<AnimalId> carcaca_id = celula_alvo.carcacaId;
+				if (!mundo.remover_carcaca(carcaca_id.value())) {
+					continue;
+				}
+				animal_ponteiro->ganhar_energia(ENERGIA_DA_CARCACA);
 			}
 		}
 
 		if (acao.tipo == TipoAcao::Reproduzir) {
 
 			Animal* animal_ponteiro = mundo.buscar_animal(acao.animal_id);
+			int custo_reproducao = 0;
+			if (animal_ponteiro == nullptr) {
+				continue;
+			}
+
+			if (animal_ponteiro->get_especie() == Especie::Coelho) {
+				custo_reproducao = CUSTO_REPRODUZIR_COELHO;
+			}
+			else if (animal_ponteiro->get_especie() == Especie::Lobo) {
+				custo_reproducao = CUSTO_REPRODUZIR_LOBO;
+			}
+
+			if (animal_ponteiro->get_energia() < custo_reproducao) {
+				continue;
+			}
 
 			mundo.adicionar_animal(
 				animal_ponteiro->get_especie(),
@@ -172,30 +219,58 @@ void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
 				tick_numero
 			);
 
-			if (animal_ponteiro->get_especie() == Especie::Coelho) {
-				animal_ponteiro->gastar_energia(CUSTO_REPRODUZIR_COELHO);
-			}
+			animal_ponteiro->gastar_energia(custo_reproducao);
+
 		}
 	}
 }
 
-void Simulacao::matar_animais() {
+std::vector<AnimalId> Simulacao::matar_animais() {
 	std::vector<AnimalId> animais_mortos;
-	const Tick idade_max = IDADE_MAX_COELHO;
+	Tick idade_max = 200;
+
 	for (const auto& [id, animal] : mundo.get_animais()) {
+
+		Especie especie = animal.get_especie();
+
+		if (especie == Especie::Coelho){
+			idade_max = IDADE_MAX_COELHO;
+		}
+		else if (especie == Especie::Lobo){
+			idade_max = IDADE_MAX_LOBO;
+		}
 
 		Tick idade = animal.get_idade(tick_numero);
 		int energia = animal.get_energia();
 
-		if (energia <= 0 || idade > idade_max) {
+		if (animal.get_vivo() == false) {
 			animais_mortos.push_back(id);
 		}
 
+		if (idade > idade_max) {
+			animais_mortos.push_back(id);
+		}
+	
+		if (energia <= 0) {
+			animais_mortos.push_back(id);
+		}
 	}
 
+	return animais_mortos;
+}
+
+void Simulacao::gerar_carcacas(const std::vector<AnimalId>& animais_mortos) {
 	for (AnimalId id : animais_mortos) {
+		Animal* animal = mundo.buscar_animal(id);
+
+		if (animal == nullptr) {
+			continue;
+		}	
+
+		mundo.adicionar_carcaca(*animal, tick_numero);
+
 		mundo.remover_animal(id);
-	}
+	}	
 }
 
 const Mundo& Simulacao::get_mundo() const{
@@ -233,11 +308,19 @@ std::vector<Acao> Simulacao::processar_animais() {
 			continue;
 		}
 
+		if (animal.get_vivo() == false) {
+			continue;
+		}
+
 		int raio_visao = 0; ///< Raio 0 como padrão
 		if (animal_ponteiro->get_especie() == Especie::Coelho) {
 			animal_ponteiro->gastar_energia(CUSTO_POR_TICK_COELHO);
 			raio_visao = RAIO_VISAO_COELHO;
 			
+		}
+		else if (animal_ponteiro->get_especie() == Especie::Lobo) {
+			animal_ponteiro->gastar_energia(CUSTO_POR_TICK_LOBO);
+			raio_visao = RAIO_VISAO_LOBO;
 		}
 
 		const VisaoAnimal visao = mundo.observar(animal.get_posicao(), raio_visao);

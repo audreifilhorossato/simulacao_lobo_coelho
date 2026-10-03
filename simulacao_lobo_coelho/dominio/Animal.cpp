@@ -17,7 +17,6 @@ Animal::Animal(
 {
 };
 
-
 void Animal::alterar_vivo() {
 	vivo = !vivo;
 }
@@ -83,3 +82,34 @@ bool Animal::get_vivo() const {
 	return vivo;
 }
 
+Carcaca::Carcaca(const Animal& animal_morto, Tick tick_numero)
+	: id_original(animal_morto.get_id()),
+	especie(animal_morto.get_especie()),
+	posicao(animal_morto.get_posicao()),
+	energia_nutricional(animal_morto.get_energia()),
+	tick_nascimento(tick_numero)
+{
+}
+
+AnimalId Carcaca::get_id_original() const {
+	return id_original;
+}
+
+Especie Carcaca::get_especie() const {
+	return especie;
+}
+
+Posicao Carcaca::get_posicao() const {
+	return posicao;
+}
+
+int Carcaca::get_energia_nutricional() const {
+	return energia_nutricional;
+}
+
+Tick Carcaca::get_idade(Tick tick_atual) const {
+	if (tick_atual <= tick_nascimento) {
+		return 0;
+	}
+	return tick_atual - tick_nascimento;
+}

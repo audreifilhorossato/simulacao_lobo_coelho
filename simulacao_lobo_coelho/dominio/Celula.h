@@ -13,5 +13,6 @@
 
 struct Celula{
 	bool tem_planta = false;							///< Indica se há uma planta disponível na célula.
+	std::optional<AnimalId> carcacaId = std::nullopt;	///< Indica se há uma carcaca disponível na célula.
 	std::optional<AnimalId> animalId = std::nullopt;	///< Identificador do animal que ocupa a célula, ou std::nullopt se estiver vazia.
 };
