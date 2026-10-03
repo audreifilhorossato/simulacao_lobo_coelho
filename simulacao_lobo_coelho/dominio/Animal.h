@@ -103,3 +103,23 @@ class Animal {
 		int energia;			///< Energia atual do animal.
 		bool vivo;				///< Estado de vida do animal (true = vivo).
 };
+
+class Carcaca {
+public:
+	// Construtor
+	Carcaca(const Animal& animal_morto, Tick tick_numero);
+
+	// Getters
+	AnimalId get_id_original() const;
+	Tick get_idade(Tick tick_atual) const;
+	Especie get_especie() const;
+	Posicao get_posicao() const;
+	int get_energia_nutricional() const;
+
+private:
+	Tick tick_nascimento;
+	AnimalId id_original;
+	Especie especie;
+	Posicao posicao;
+	int energia_nutricional;
+};

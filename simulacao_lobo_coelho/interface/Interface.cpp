@@ -85,11 +85,21 @@ void Interface::desenhar(const Mundo& mundo) {
                             break;
                     }
                 }
+            }else if (celula.carcacaId.has_value()) {
+                //carcaca
+				if (mundo.buscar_carcaca(celula.carcacaId.value()) == nullptr) {
+					//Problema a celula tem id que não existe animal
+					cor_celula = sf::Color(255, 0, 255);
+				}
+				else {
+					cor_celula = sf::Color(255, 0, 0);
+				}
+
             }
             else if (celula.tem_planta) {
                 //planta
                 cor_celula = sf::Color(40, 200, 60);
-            }
+			}
 
             quadrado.setFillColor(cor_celula);
 

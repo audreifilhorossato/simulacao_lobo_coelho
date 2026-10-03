@@ -13,6 +13,7 @@
 #include <utility>
 #include <iostream>
 #include <optional>
+#include <deque>
 
 class Simulacao {
 	public:
@@ -41,8 +42,10 @@ class Simulacao {
 		void executar_acoes(const std::vector<Acao>& acoes);
 
 		void gerar_plantas();
+		void destruir_carcacas();
+		void gerar_carcacas(const std::vector<AnimalId>& animais_mortos);
 		std::vector<Acao> processar_animais();
-		void matar_animais();
+		std::vector<AnimalId> matar_animais();
 		double probabilidade_nascimento_planta;
 
 		void tick_atualizar();
