@@ -18,7 +18,7 @@ Animal::Animal(
 };
 
 void Animal::alterar_vivo() {
-	vivo = !vivo;
+	vivo = false;
 }
 
 // Retorna 0 para evitar idade negativa caso o tick atual seja anterior ao nascimento

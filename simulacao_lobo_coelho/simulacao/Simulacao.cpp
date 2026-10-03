@@ -47,8 +47,29 @@ Simulacao::Simulacao(std::size_t linhas, std::size_t colunas)
 
 	mundo.adicionar_animal(
 		Especie::Lobo,
-		{ 3, 3 },
-		3000,
+		{ 24, 3 },
+		300,
+		tick_numero
+	);
+
+	mundo.adicionar_animal(
+		Especie::Lobo,
+		{ 3, 27 },
+		300,
+		tick_numero
+	);
+
+	mundo.adicionar_animal(
+		Especie::Lobo,
+		{ 11, 14 },
+		300,
+		tick_numero
+	);
+
+	mundo.adicionar_animal(
+		Especie::Lobo,
+		{ 3, 14 },
+		300,
 		tick_numero
 	);
 }
@@ -108,12 +129,17 @@ std::vector<Acao> Simulacao::resolver_conflitos(const std::vector<Acao>& acoes) 
 		
 	}
 
-	std::vector<Acao> acoes_fazer;
+	std::deque<Acao> acoes_fazer;
 
 	for (int i = 0; i < matriz_org_posicao.size(); i++) {
 		std::optional<Acao> prioritaria;
 		int maior_energia = -1;
 		for (int j = 0; j < matriz_org_posicao[i].size(); j++) {
+			
+			if (matriz_org_posicao[i][j].tipo == TipoAcao::Matar) {
+				acoes_fazer.push_front(matriz_org_posicao[i][j]);
+			}
+
 			if (matriz_org_posicao[i][j].tipo == TipoAcao::Esperar) {
 				acoes_fazer.push_back(matriz_org_posicao[i][j]);
 				break;
@@ -146,12 +172,33 @@ std::vector<Acao> Simulacao::resolver_conflitos(const std::vector<Acao>& acoes) 
 		acoes_fazer.push_back(prioritaria.value());
 	}
 
-	return acoes_fazer;
+	return std::vector<Acao>(acoes_fazer.begin(), acoes_fazer.end());
 }
 
 void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
 	for (const Acao& acao : acoes){
-		if (acao.tipo == TipoAcao::Mover){
+		if (acao.tipo == TipoAcao::Matar) {
+			Animal* animal_ponteiro = mundo.buscar_animal(acao.animal_id);
+			if (animal_ponteiro == nullptr) {
+				continue;
+			}
+
+			const Celula& celula_alvo = mundo.get_tabuleiro().obter(acao.destino);
+
+			if (!celula_alvo.animalId.has_value()) {
+				continue;
+			}
+
+			Animal* animal_alvo = mundo.buscar_animal(celula_alvo.animalId.value());
+
+			if (animal_alvo == nullptr) {
+				continue;
+			}
+
+			animal_alvo->alterar_vivo();
+		}
+
+		else if (acao.tipo == TipoAcao::Mover){
 			if (!mundo.mover_animal(acao.animal_id, acao.destino)) {
 				continue;
 			}
@@ -162,6 +209,10 @@ void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
 				continue;
 			}
 
+			if (animal_ponteiro->get_vivo() == false) {
+				continue;
+			}
+
 			if (animal_ponteiro->get_especie() == Especie::Coelho){
 				animal_ponteiro->gastar_energia(CUSTO_MOVIMENTO_COELHO);
 			}
@@ -169,11 +220,15 @@ void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
 				animal_ponteiro->gastar_energia(CUSTO_MOVIMENTO_LOBO);
 			}
 		}
-		if (acao.tipo == TipoAcao::Comer){
+		else if (acao.tipo == TipoAcao::Comer){
 
 			Animal* animal_ponteiro = mundo.buscar_animal(acao.animal_id);
 
 			if (animal_ponteiro == nullptr) {
+				continue;
+			}
+
+			if (animal_ponteiro->get_vivo() == false) {
 				continue;
 			}
 
@@ -186,6 +241,11 @@ void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
 			else if (animal_ponteiro->get_especie() == Especie::Lobo) {
 				const Celula& celula_alvo = mundo.get_tabuleiro().obter(acao.destino);
 				const std::optional<AnimalId> carcaca_id = celula_alvo.carcacaId;
+
+				if (!carcaca_id.has_value()) {
+					continue;
+				}
+
 				if (!mundo.remover_carcaca(carcaca_id.value())) {
 					continue;
 				}
@@ -193,7 +253,7 @@ void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
 			}
 		}
 
-		if (acao.tipo == TipoAcao::Reproduzir) {
+		else if (acao.tipo == TipoAcao::Reproduzir) {
 
 			Animal* animal_ponteiro = mundo.buscar_animal(acao.animal_id);
 			int custo_reproducao = 0;
@@ -245,14 +305,17 @@ std::vector<AnimalId> Simulacao::matar_animais() {
 
 		if (animal.get_vivo() == false) {
 			animais_mortos.push_back(id);
+			continue;
 		}
 
 		if (idade > idade_max) {
 			animais_mortos.push_back(id);
+			continue;
 		}
 	
 		if (energia <= 0) {
 			animais_mortos.push_back(id);
+			continue;
 		}
 	}
 

@@ -80,7 +80,7 @@ Acao SistemaDecisao::decidir_coelho(
 
     std::uniform_int_distribution<int> dist_int(0, destinos_possiveis.size() - 1);
 
-    if (coelho.get_energia() > 50 && percentagem > 90 && coelho.get_idade(numero_tick) > IDADE_MAX_COELHO/3) {
+    if (coelho.get_energia() > 50 && percentagem > 90 && coelho.get_idade(numero_tick) > IDADE_MAX_COELHO/6) {
         return{ TipoAcao::Reproduzir, coelho.get_id(), destinos_possiveis.at(dist_int(gerador)) };
     }
 
@@ -130,6 +130,7 @@ Acao SistemaDecisao::decidir_lobo(
 {
     std::vector<Vec2> direcoes_possiveis;
     std::vector<Posicao> destinos_possiveis;
+	std::vector<Posicao> alvo_possiveis;
 
 
     std::uniform_int_distribution<int> chance(0, 100);
@@ -162,6 +163,9 @@ Acao SistemaDecisao::decidir_lobo(
 
         if (celula.especie_animal.has_value() && celula.especie_animal.value() == Especie::Coelho) {
             vetor_direcao = vetor_direcao + (vetor_celula * (1.0 / celula.dist_quadrada));
+            if (celula.dist_quadrada <= 2) {
+                alvo_possiveis.push_back(celula.posicao);
+            }
         }
 
         if ((celula.dist_quadrada <= 2) && ((!celula.animal_id.has_value()) || (celula.tem_carcaca))) {
@@ -174,9 +178,20 @@ Acao SistemaDecisao::decidir_lobo(
         return { TipoAcao::Esperar, lobo.get_id(), lobo.get_posicao() };
     }
 
+    
+
+	if (!alvo_possiveis.empty() && percentagem < 70) {
+		std::uniform_int_distribution<int> dist_alvo(0, alvo_possiveis.size() - 1);
+		return {
+			TipoAcao::Matar,
+			lobo.get_id(),
+			alvo_possiveis.at(dist_alvo(gerador))
+		};
+	}
+
     std::uniform_int_distribution<int> dist_int(0, destinos_possiveis.size() - 1);
 
-    if (lobo.get_energia() > 50 && percentagem > 90 && lobo.get_idade(numero_tick) > IDADE_MAX_LOBO / 3) {
+    if (lobo.get_energia() > 50 && percentagem > 90 && lobo.get_idade(numero_tick) > IDADE_MAX_LOBO / 4) {
         return{ TipoAcao::Reproduzir, lobo.get_id(), destinos_possiveis.at(dist_int(gerador)) };
     }
 

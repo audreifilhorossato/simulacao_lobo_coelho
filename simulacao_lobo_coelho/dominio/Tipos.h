@@ -8,20 +8,20 @@
 
 constexpr int CUSTO_MOVIMENTO_COELHO = 1;
 constexpr int CUSTO_POR_TICK_COELHO = 1;
-constexpr int CUSTO_REPRODUZIR_COELHO = 40;
-constexpr int RAIO_VISAO_COELHO = 4;
+constexpr int CUSTO_REPRODUZIR_COELHO = 20;
+constexpr int RAIO_VISAO_COELHO = 5;
 constexpr int IDADE_MAX_COELHO = 75;
-constexpr int ENERGIA_MAX_COELHO = 100;
+constexpr int ENERGIA_MAX_COELHO = 150;
 
 constexpr int CUSTO_MOVIMENTO_LOBO = 1;
-constexpr int CUSTO_POR_TICK_LOBO = 2;
+constexpr int CUSTO_POR_TICK_LOBO = 1;
 constexpr int CUSTO_REPRODUZIR_LOBO = 40;
-constexpr int RAIO_VISAO_LOBO = 6;
-constexpr int IDADE_MAX_LOBO = 200;
-constexpr int ENERGIA_MAX_LOBO = 150;
+constexpr int RAIO_VISAO_LOBO = 7;
+constexpr int IDADE_MAX_LOBO = 150;
+constexpr int ENERGIA_MAX_LOBO = 200;
 
-constexpr int ENERGIA_DA_PLANTA = 30;
-constexpr int ENERGIA_DA_CARCACA = 50;
+constexpr int ENERGIA_DA_PLANTA = 40;
+constexpr int ENERGIA_DA_CARCACA = 60;
 
 constexpr int LIFETIME_CARCACA = 50;
 
@@ -51,7 +51,8 @@ enum class TipoAcao
 	Esperar,
 	Mover,
 	Comer,
-	Reproduzir
+	Reproduzir, 
+	Matar
 };
 
 /**

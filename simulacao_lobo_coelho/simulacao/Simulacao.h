@@ -13,6 +13,7 @@
 #include <utility>
 #include <iostream>
 #include <optional>
+#include <deque>
 
 class Simulacao {
 	public:
