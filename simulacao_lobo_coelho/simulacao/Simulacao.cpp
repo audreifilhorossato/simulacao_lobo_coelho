@@ -8,70 +8,11 @@ Simulacao::Simulacao(std::size_t linhas, std::size_t colunas)
 	tick_duracao(0.2), 
 	tick_numero(0),
 	gerador(1), //semente fixa por enquanto
-	probabilidade_nascimento_planta(0.001) 
+	probabilidade_nascimento_planta(0.001),
+	linhas(static_cast<int>(linhas)),
+	colunas(static_cast<int>(colunas))
 {
-	mundo.adicionar_animal(
-		Especie::Coelho,
-		{ 2, 3 },
-		100,
-		tick_numero
-	);
-
-	mundo.adicionar_animal(
-		Especie::Coelho,
-		{ 7, 8 },
-		100,
-		tick_numero
-	);
-
-	mundo.adicionar_animal(
-		Especie::Coelho,
-		{ 11, 15 },
-		100,
-		tick_numero
-	);
-
-	mundo.adicionar_animal(
-		Especie::Coelho,
-		{ 20, 3 },
-		100,
-		tick_numero
-	);
-
-	mundo.adicionar_animal(
-		Especie::Coelho,
-		{ 24, 6 },
-		100,
-		tick_numero
-	);
-
-	mundo.adicionar_animal(
-		Especie::Lobo,
-		{ 24, 3 },
-		300,
-		tick_numero
-	);
-
-	mundo.adicionar_animal(
-		Especie::Lobo,
-		{ 3, 27 },
-		300,
-		tick_numero
-	);
-
-	mundo.adicionar_animal(
-		Especie::Lobo,
-		{ 11, 14 },
-		300,
-		tick_numero
-	);
-
-	mundo.adicionar_animal(
-		Especie::Lobo,
-		{ 3, 14 },
-		300,
-		tick_numero
-	);
+	setup_inicial();
 }
 
 void Simulacao::tick_atualizar() {
@@ -90,6 +31,24 @@ void Simulacao::tick_atualizar() {
 	executar_acoes(aprovadas);
 
 	gerar_plantas();
+}
+
+void Simulacao::setup_inicial(){
+	std::uniform_int_distribution<int> chance(7, 14);
+	const int n_animais = chance(gerador);
+
+	for (int i = 0; i < n_animais; ++i) {
+		std::uniform_int_distribution<int> g_linha(0, linhas - 1);
+		std::uniform_int_distribution<int> g_coluna(0, colunas - 1);
+		const int linha = g_linha(gerador);
+		const int coluna = g_coluna(gerador);
+
+		Especie especie = (i % 2 == 0) ? Especie::Coelho : Especie::Lobo;
+
+		int energia_inicial = (especie == Especie::Coelho) ? ENERGIA_PRIMEIROS_COELHOS : ENERGIA_PRIMEIROS_LOBOS;
+		Posicao posicao = {linha, coluna};
+		mundo.adicionar_animal(especie, posicao, energia_inicial, tick_numero);
+	}
 }
 
 void Simulacao::destruir_carcacas() {
@@ -214,9 +173,15 @@ void Simulacao::executar_acoes(const std::vector<Acao>& acoes){
 			}
 
 			if (animal_ponteiro->get_especie() == Especie::Coelho){
+				if (animal_ponteiro->get_idade(tick_numero) < IDADE_REPRODUCAO_COELHO) {
+					continue;
+				}
 				animal_ponteiro->gastar_energia(CUSTO_MOVIMENTO_COELHO);
 			}
 			else if (animal_ponteiro->get_especie() == Especie::Lobo){
+				if (animal_ponteiro->get_idade(tick_numero) < IDADE_REPRODUCAO_LOBO) {
+					continue;
+				}
 				animal_ponteiro->gastar_energia(CUSTO_MOVIMENTO_LOBO);
 			}
 		}

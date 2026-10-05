@@ -49,8 +49,8 @@ void Interface::desenhar(const Mundo& mundo) {
     const Tabuleiro& tabuleiro = mundo.get_tabuleiro();
 
     sf::RectangleShape quadrado({
-        TAMANHO_CELULA - 1.0f,
-        TAMANHO_CELULA - 1.0f
+        TAMANHO_CELULA ,
+        TAMANHO_CELULA
         });
 
     for (std::size_t linha = 0; linha < tabuleiro.get_linhas(); linha++) {

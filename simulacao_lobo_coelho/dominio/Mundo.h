@@ -44,4 +44,5 @@ class Mundo {
 		std::unordered_map<AnimalId, Animal> animais;
 		std::unordered_map<AnimalId, Carcaca> carcacas;
 		AnimalId proximo_id;
+		void criar_lago();
 };

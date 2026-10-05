@@ -80,7 +80,7 @@ Acao SistemaDecisao::decidir_coelho(
 
     std::uniform_int_distribution<int> dist_int(0, destinos_possiveis.size() - 1);
 
-    if (coelho.get_energia() > 50 && percentagem > 90 && coelho.get_idade(numero_tick) > IDADE_MAX_COELHO/6) {
+    if (coelho.get_energia() > 50 && percentagem > 80 && coelho.get_idade(numero_tick) >= IDADE_REPRODUCAO_COELHO) {
         return{ TipoAcao::Reproduzir, coelho.get_id(), destinos_possiveis.at(dist_int(gerador)) };
     }
 
@@ -191,7 +191,7 @@ Acao SistemaDecisao::decidir_lobo(
 
     std::uniform_int_distribution<int> dist_int(0, destinos_possiveis.size() - 1);
 
-    if (lobo.get_energia() > 50 && percentagem > 90 && lobo.get_idade(numero_tick) > IDADE_MAX_LOBO / 4) {
+    if (lobo.get_energia() > 50 && percentagem > 95 && lobo.get_idade(numero_tick) >= IDADE_REPRODUCAO_LOBO) {
         return{ TipoAcao::Reproduzir, lobo.get_id(), destinos_possiveis.at(dist_int(gerador)) };
     }
 

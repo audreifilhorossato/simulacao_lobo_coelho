@@ -40,6 +40,9 @@
     <ClInclude Include="simulacao\Simulacao.h" />
     <ClInclude Include="simulacao\SistemaDecisao.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

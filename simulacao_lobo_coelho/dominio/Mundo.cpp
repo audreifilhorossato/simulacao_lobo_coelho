@@ -5,7 +5,14 @@ Mundo::Mundo(std::size_t linhas, std::size_t colunas)
 	animais(),
 	carcacas(),
 	proximo_id(1)
-{}
+{
+	criar_lago();
+}
+
+void Mundo::criar_lago() {
+	// Implementação para criar um lago no tabuleiro, se necessário.
+	// Pode ser uma área específica onde não há plantas ou animais.)
+}	
 
 bool Mundo::remover_carcaca(AnimalId id) {
 	std::unordered_map<AnimalId, Carcaca>::iterator carcaca_encontrada = carcacas.find(id);

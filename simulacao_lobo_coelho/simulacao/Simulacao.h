@@ -35,6 +35,9 @@ class Simulacao {
 		Duracao tick_duracao;
 		std::uint64_t tick_numero;
 
+		int linhas;
+		int colunas;
+
 		std::mt19937 gerador;
 		SistemaDecisao sistema_decisao;
 
@@ -47,6 +50,7 @@ class Simulacao {
 		std::vector<Acao> processar_animais();
 		std::vector<AnimalId> matar_animais();
 		double probabilidade_nascimento_planta;
+		void setup_inicial();
 
 		void tick_atualizar();
 };

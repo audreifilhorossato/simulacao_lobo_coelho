@@ -37,8 +37,15 @@ void Animal::gastar_energia(int gasto) {
 
 void Animal::ganhar_energia(int ganho) {
 	energia += ganho;
-	if (energia > ENERGIA_MAX_COELHO) {
-		energia = ENERGIA_MAX_COELHO;
+	int energia_max = 0;
+	if (especie == Especie::Lobo) {
+		energia_max = ENERGIA_MAX_LOBO;
+	}
+	else if (especie == Especie::Coelho){
+		energia_max = ENERGIA_MAX_COELHO;
+	}
+	if (energia > energia_max) {
+		energia = energia_max;
 	}
 }
 
