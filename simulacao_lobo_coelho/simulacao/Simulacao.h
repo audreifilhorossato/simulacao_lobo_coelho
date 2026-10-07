@@ -43,7 +43,7 @@ class Simulacao {
 		std::mt19937 gerador;
 		SistemaDecisao sistema_decisao;
 
-		std::uint64_t semente_base = 1;
+		std::uint64_t semente_base = 2;
 
 		std::vector<Acao> resolver_conflitos(const std::vector<Acao>& acoes);
 		void executar_acoes(const std::vector<Acao>& acoes);
@@ -73,7 +73,7 @@ class Simulacao {
 				return;
 			}
 
-			std::cout << "Executando paralelamente com " << n << " itens." << std::endl;
+			
 
 			const std::size_t n_threads =
 				std::min<std::size_t>(n, std::max(1u, std::thread::hardware_concurrency()));

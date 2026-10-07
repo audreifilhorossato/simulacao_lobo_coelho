@@ -41,7 +41,9 @@
     <ClInclude Include="simulacao\SistemaDecisao.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\ARQUITETURA.md" />
     <None Include="..\README.md" />
+    <None Include="..\REGRAS.md" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
