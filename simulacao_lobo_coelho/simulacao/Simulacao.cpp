@@ -5,10 +5,10 @@
 Simulacao::Simulacao(std::size_t linhas, std::size_t colunas) 
 	:mundo(linhas, colunas), 
 	tempo_acumulado(0.0), 
-	tick_duracao(0.2), 
+	tick_duracao(0.1), 
 	tick_numero(0),
 	gerador(semente_base), //semente fixa por enquanto
-	probabilidade_nascimento_planta(0.001),
+	probabilidade_nascimento_planta(0.0015),
 	linhas(static_cast<int>(linhas)),
 	colunas(static_cast<int>(colunas))
 {
@@ -24,7 +24,7 @@ void Simulacao::tick_atualizar() {
 
 	destruir_carcacas();
 
-	const std::vector<Acao> propostas = processar_animais();
+	const std::vector<Acao> propostas = processar_animais_paralelo();
 
 	const std::vector<Acao> aprovadas = resolver_conflitos(propostas);
 
@@ -34,7 +34,8 @@ void Simulacao::tick_atualizar() {
 }
 
 void Simulacao::setup_inicial(){
-	std::uniform_int_distribution<int> chance(7, 14);
+
+	std::uniform_int_distribution<int> chance(linhas*colunas * 0.005, linhas*colunas * 0.01);
 	const int n_animais = chance(gerador);
 
 	for (int i = 0; i < n_animais; ++i) {

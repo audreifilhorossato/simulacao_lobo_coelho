@@ -59,10 +59,22 @@ class Simulacao {
 
 		std::vector<Acao> processar_animais_paralelo();
 		static std::mt19937 gerador_paralelo(std::uint64_t semente, int tick, int id);
+		static constexpr std::size_t LIMIAR_PARALELO = 400;
+
 
 		template <typename F>
+
 		static void paralelo_para(std::size_t n, F&& f) {
+			
 			if (n == 0) return;
+
+			if (n < LIMIAR_PARALELO) {             
+				for (std::size_t i = 0; i < n; ++i) f(i);
+				return;
+			}
+
+			std::cout << "Executando paralelamente com " << n << " itens." << std::endl;
+
 			const std::size_t n_threads =
 				std::min<std::size_t>(n, std::max(1u, std::thread::hardware_concurrency()));
 			const std::size_t bloco_size = (n + n_threads - 1) / n_threads;
