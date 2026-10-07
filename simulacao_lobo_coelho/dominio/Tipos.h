@@ -8,18 +8,18 @@
 
 constexpr int CUSTO_MOVIMENTO_COELHO = 1;
 constexpr int CUSTO_POR_TICK_COELHO = 1;
-constexpr int CUSTO_REPRODUZIR_COELHO = 20;
+constexpr int CUSTO_REPRODUZIR_COELHO = 15;
 constexpr int RAIO_VISAO_COELHO = 5;
 constexpr int IDADE_MAX_COELHO = 75;
 constexpr int ENERGIA_MAX_COELHO = 150;
 constexpr int ENERGIA_PRIMEIROS_COELHOS = 100;
-constexpr int IDADE_REPRODUCAO_COELHO = 5;
+constexpr int IDADE_REPRODUCAO_COELHO = 10;
 
 constexpr int CUSTO_MOVIMENTO_LOBO = 2;
 constexpr int CUSTO_POR_TICK_LOBO = 1;
-constexpr int CUSTO_REPRODUZIR_LOBO = 40;
+constexpr int CUSTO_REPRODUZIR_LOBO = 50;
 constexpr int RAIO_VISAO_LOBO = 7;
-constexpr int IDADE_MAX_LOBO = 150;
+constexpr int IDADE_MAX_LOBO = 130;
 constexpr int ENERGIA_MAX_LOBO = 200;
 constexpr int ENERGIA_PRIMEIROS_LOBOS = 200;
 constexpr int IDADE_REPRODUCAO_LOBO = 30;

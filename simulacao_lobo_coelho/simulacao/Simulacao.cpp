@@ -7,7 +7,7 @@ Simulacao::Simulacao(std::size_t linhas, std::size_t colunas)
 	tempo_acumulado(0.0), 
 	tick_duracao(0.2), 
 	tick_numero(0),
-	gerador(1), //semente fixa por enquanto
+	gerador(semente_base), //semente fixa por enquanto
 	probabilidade_nascimento_planta(0.001),
 	linhas(static_cast<int>(linhas)),
 	colunas(static_cast<int>(colunas))
@@ -398,5 +398,47 @@ void Simulacao::gerar_plantas() {
 
 
 
+}
+
+std::vector<Acao> Simulacao::processar_animais_paralelo() {
+
+	std::vector<Animal*> vivos;
+	vivos.reserve(mundo.get_animais().size());
+	for (const auto& [id, animal] : mundo.get_animais()) {
+		Animal* a = mundo.buscar_animal(id);
+		if (a != nullptr && a->get_vivo()) {
+			vivos.push_back(a);
+		}
+	}
+
+	for (Animal* a : vivos) {
+		if (a->get_especie() == Especie::Coelho)      a->gastar_energia(CUSTO_POR_TICK_COELHO);
+		else if (a->get_especie() == Especie::Lobo)   a->gastar_energia(CUSTO_POR_TICK_LOBO);
+	}
+
+	std::vector<Acao> acoes(vivos.size());  
+
+	paralelo_para(vivos.size(), [&](std::size_t i) {
+		const Animal& aminal = *vivos[i];
+
+		int raio_visao = 0;
+		if (aminal.get_especie() == Especie::Coelho)      raio_visao = RAIO_VISAO_COELHO;
+		else if (aminal.get_especie() == Especie::Lobo)   raio_visao = RAIO_VISAO_LOBO;
+
+		const VisaoAnimal visao = mundo.observar(aminal.get_posicao(), raio_visao);
+
+		std::mt19937 gerador_local = gerador_paralelo(semente_base, tick_numero, aminal.get_id());
+		acoes[i] = sistema_decisao.decidir(aminal, visao, gerador_local, tick_numero);
+		});
+
+	return acoes;
+}
+
+std::mt19937 Simulacao::gerador_paralelo(std::uint64_t semente, int tick, int id) {
+	std::seed_seq seq{ static_cast<std::uint32_t>(semente),
+					   static_cast<std::uint32_t>(semente >> 32),
+					   static_cast<std::uint32_t>(tick),
+					   static_cast<std::uint32_t>(id) };
+	return std::mt19937(seq);
 }
 

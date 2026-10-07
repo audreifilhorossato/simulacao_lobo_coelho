@@ -14,6 +14,8 @@
 #include <iostream>
 #include <optional>
 #include <deque>
+#include <execution>
+#include <algorithm>
 
 class Simulacao {
 	public:
@@ -41,6 +43,8 @@ class Simulacao {
 		std::mt19937 gerador;
 		SistemaDecisao sistema_decisao;
 
+		std::uint64_t semente_base = 1;
+
 		std::vector<Acao> resolver_conflitos(const std::vector<Acao>& acoes);
 		void executar_acoes(const std::vector<Acao>& acoes);
 
@@ -51,6 +55,28 @@ class Simulacao {
 		std::vector<AnimalId> matar_animais();
 		double probabilidade_nascimento_planta;
 		void setup_inicial();
-
 		void tick_atualizar();
+
+		std::vector<Acao> processar_animais_paralelo();
+		static std::mt19937 gerador_paralelo(std::uint64_t semente, int tick, int id);
+
+		template <typename F>
+		static void paralelo_para(std::size_t n, F&& f) {
+			if (n == 0) return;
+			const std::size_t n_threads =
+				std::min<std::size_t>(n, std::max(1u, std::thread::hardware_concurrency()));
+			const std::size_t bloco_size = (n + n_threads - 1) / n_threads;
+
+			std::vector<std::thread> threads;
+			threads.reserve(n_threads);
+			for (std::size_t t = 0; t < n_threads; ++t) {
+				const std::size_t ini = t * bloco_size;
+				const std::size_t fim = std::min(n, ini + bloco_size);
+				if (ini >= fim) break;
+				threads.emplace_back([&f, ini, fim] {
+					for (std::size_t i = ini; i < fim; ++i) f(i);
+					});
+			}
+			for (auto& thread : threads) thread.join();
+		}
 };

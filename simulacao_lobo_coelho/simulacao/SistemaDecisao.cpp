@@ -80,7 +80,7 @@ Acao SistemaDecisao::decidir_coelho(
 
     std::uniform_int_distribution<int> dist_int(0, destinos_possiveis.size() - 1);
 
-    if (coelho.get_energia() > 50 && percentagem > 80 && coelho.get_idade(numero_tick) >= IDADE_REPRODUCAO_COELHO) {
+    if (coelho.get_energia() > 50 && percentagem > 60 && coelho.get_idade(numero_tick) >= IDADE_REPRODUCAO_COELHO) {
         return{ TipoAcao::Reproduzir, coelho.get_id(), destinos_possiveis.at(dist_int(gerador)) };
     }
 
